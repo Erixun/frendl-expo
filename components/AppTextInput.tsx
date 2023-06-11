@@ -1,5 +1,5 @@
 import { StyleProp, TextInput, TextStyle } from 'react-native';
-import { Colors } from '../theme/colors';
+import { AppColors } from '../theme/colors';
 import { TextInputProps } from 'react-native-paper';
 
 const AppTextInput = ({
@@ -18,12 +18,12 @@ const AppTextInput = ({
 export default AppTextInput;
 
 const $inputStyle: TextStyle = {
-  backgroundColor: Colors.neutral100,
+  backgroundColor: AppColors.neutral100,
   width: 250,
   paddingVertical: 5,
   paddingHorizontal: 10,
   borderRadius: 5,
-  borderColor: Colors.neutral500,
+  borderColor: AppColors.neutral500,
   borderWidth: 1,
   margin: 10,
   elevation: 4,

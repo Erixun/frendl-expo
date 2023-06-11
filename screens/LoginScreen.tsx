@@ -1,10 +1,19 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
-import { Text, TextInput, TextStyle, View, ViewStyle } from 'react-native';
+import {
+  Text,
+  TextInput,
+  TextStyle,
+  View,
+  ViewStyle,
+  Image,
+} from 'react-native';
 import Button from '../components/AppButton';
 import AppTextInput from '../components/AppTextInput';
 import { useState } from 'react';
 import AppButton from '../components/AppButton';
+import { StatusBar } from 'expo-status-bar';
+import { AppColors } from '../theme/colors';
 
 type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -18,31 +27,24 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const handlePasswordInputChange = (text: string) => {
     setPassword(text);
   };
+
+  const BankIDLogo = () => (
+    <View style={{ height: 50, width: 50 }}>
+      <Image
+        style={{ height: '100%', width: '100%' }}
+        source={require('../assets/logo/BankID_logo_white.png')}
+      />
+    </View>
+  );
+
   return (
     <View style={$screen}>
-      <Text style={$logoText}>Welcome Frendl</Text>
-      <Text style={$infoText}>Token: {route.params?.token}</Text>
-      <Text style={$infoText}>Device ID: {route.params?.deviceId}</Text>
-      {/* TEXT INPUT HERE */}
-      <AppTextInput value={username} onChangeText={handleNameInputChange} />
-      <AppTextInput
-        value={password}
-        textContentType="password"
-        secureTextEntry={true}
-        onChangeText={handlePasswordInputChange}
-      />
+      <Text style={$logoText}>Welcome to Frendl</Text>
+      <Text style={$subText}>Where friends come to zone</Text>
       <AppButton
-        label="Login"
-        onPress={() => navigation.navigate('Home', { deviceId: '123' })}
-      />
-
-      <AppButton
-        label="Login with BankID"
-        onPress={() => navigation.navigate('Home', { deviceId: '123' })}
-      />
-
-      <AppButton
-        label="Login with Freja eID"
+        label="Login with"
+        rightAsset={<BankIDLogo />}
+        style={$btnLogin}
         onPress={() => navigation.navigate('Home', { deviceId: '123' })}
       />
     </View>
@@ -55,15 +57,29 @@ const $screen: ViewStyle = {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
+  position: 'relative',
 };
 
 const $logoText: TextStyle = {
-  fontSize: 24,
+  fontSize: 36,
   fontWeight: 'bold',
+  textAlign: 'center',
+  color: AppColors.success800,
+};
+
+const $subText: TextStyle = {
+  fontSize: 20,
   textAlign: 'center',
 };
 
 const $infoText: TextStyle = {
   fontSize: 16,
   textAlign: 'center',
+};
+
+const $btnLogin: ViewStyle = {
+  position: 'absolute',
+  bottom: '10%',
+  width: '80%',
+  margin: 10,
 };

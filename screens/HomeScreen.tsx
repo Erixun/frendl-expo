@@ -1,14 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { Pressable, Text, TextStyle, View, ViewStyle } from 'react-native';
-import { Colors, buttonPrimaryColor } from '../theme/colors';
+import { AppColors, buttonPrimaryColor } from '../theme/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Icon } from '@expo/vector-icons/build/createIconSet';
 import SettingsScreen from './SettingsScreen';
 import ProfileScreen from './ProfileScreen';
-import ZoneScreen from './ZoneScreen';
+import ZoneSetupScreen from './ZoneSetupScreen';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -29,16 +28,17 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
             <Ionicons
               name={'log-out-sharp'}
               size={24}
-              color={Colors.neutral600}
+              color={AppColors.neutral600}
             />
           </Pressable>
         ),
       }}
     >
       <Tab.Screen
-        name="Zone"
-        component={ZoneScreen}
+        name="ZoneSetup"
+        component={ZoneSetupScreen}
         options={{
+          title: 'Zone',
           tabBarIcon: ({ focused, color, size }) => {
             return <Ionicons name={'map'} size={size} color={color} />;
           },

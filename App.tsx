@@ -4,15 +4,17 @@ import { StyleSheet } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import ZoneScreen from './screens/ZoneScreen';
+import ZoneSetupScreen from './screens/ZoneSetupScreen';
 import { NavigationContainer } from '@react-navigation/native';
-import { Colors, headerColor, screenColor } from './theme/colors';
+import { AppColors, headerColor, screenColor } from './theme/colors';
+import ZoneScreen from './screens/ZoneScreen';
 
 export type RootStackParamList = {
-  Home: { deviceId: string };
-  Profile: { userId: string };
   Login: { token: string; deviceId: string };
+  Home: { deviceId: string };
   Zone: { zoneId: string };
+  ZoneSetup: { zoneId: string };
+  Profile: { userId: string };
   Settings: undefined;
 };
 
@@ -34,9 +36,10 @@ const StackNavigator = () => {
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{ headerShown: false,
+        options={{
+          headerShown: false,
           contentStyle: {
-            backgroundColor: Colors.info300,
+            backgroundColor: AppColors.info200,
           },
         }}
       />
@@ -45,8 +48,9 @@ const StackNavigator = () => {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Zone" component={ZoneScreen} />
+      <Stack.Screen name="ZoneSetup" component={ZoneSetupScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Zone" component={ZoneScreen} />
     </Stack.Navigator>
   );
 };
@@ -54,7 +58,7 @@ const StackNavigator = () => {
 export default function App() {
   return (
     <NavigationContainer>
-      <StatusBar style="light" />
+      {/* <StatusBar style="dark" /> */}
       <StackNavigator />
     </NavigationContainer>
   );

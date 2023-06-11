@@ -1,4 +1,4 @@
-const Colors = {
+const AppColors = {
   neutral100: '#FFFFFF',
   neutral200: '#F7F7F7',
   neutral300: '#F0F0F0',
@@ -70,13 +70,13 @@ const Colors = {
   info900: '#001833',
 };
 
-const screenColor = Colors.primary100;
-const headerColor = Colors.success800;
-const buttonPrimaryColor = Colors.success800;
-const buttonSecondaryColor = Colors.neutral500;
+const screenColor = AppColors.secondary200;
+const headerColor = AppColors.success800;
+const buttonPrimaryColor = AppColors.primary500;
+const buttonSecondaryColor = AppColors.neutral500;
 
 export {
-  Colors,
+  AppColors,
   screenColor,
   headerColor,
   buttonPrimaryColor,
