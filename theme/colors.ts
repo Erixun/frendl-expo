@@ -70,7 +70,7 @@ const AppColors = {
   info900: '#001833',
 };
 
-const screenColor = AppColors.secondary200;
+const screenColor = AppColors.neutral100;
 const headerColor = AppColors.success800;
 const buttonPrimaryColor = AppColors.primary500;
 const buttonSecondaryColor = AppColors.neutral500;

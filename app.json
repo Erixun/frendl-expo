@@ -3,6 +3,7 @@
     "name": "frendl-expo",
     "slug": "frendl-expo",
     "version": "1.0.0",
+    "permissions": ["LOCATION"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

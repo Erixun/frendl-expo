@@ -1,17 +1,20 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
 import { Text, View, ViewStyle } from 'react-native';
 import AppButton from '../components/AppButton';
 import { useLayoutEffect, useState } from 'react';
 import AppTextInput from '../components/AppTextInput';
 import { AppColors } from '../theme/colors';
+import { RootStackParamList } from '../navigators/AppNavigator';
 
 type ZoneSetupScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'ZoneSetup'
 >;
 
-const ZoneSetupScreen = ({ route, navigation }: ZoneSetupScreenProps) => {
+export const ZoneSetupScreen = ({
+  route,
+  navigation,
+}: ZoneSetupScreenProps) => {
   useLayoutEffect(() => {
     navigation.setOptions({ title: `Zone Setup` });
   }, [navigation]);
@@ -24,8 +27,6 @@ const ZoneSetupScreen = ({ route, navigation }: ZoneSetupScreenProps) => {
 
   return (
     <View style={$screen}>
-      {/* <Text>Zone Screen - Welcome</Text> */}
-      {/* <Text>Enter Zone Code</Text> */}
       <View
         style={{
           maxWidth: 200,
@@ -34,7 +35,17 @@ const ZoneSetupScreen = ({ route, navigation }: ZoneSetupScreenProps) => {
           position: 'relative',
         }}
       >
-        <Text style={{position: "absolute", top: -20, left: 0, fontSize: 18, fontWeight: "bold"}}>Zone Code</Text>
+        <Text
+          style={{
+            position: 'absolute',
+            top: -20,
+            left: 0,
+            fontSize: 18,
+            fontWeight: 'bold',
+          }}
+        >
+          Zone Code
+        </Text>
         <AppTextInput
           style={{
             borderRadius: 50,
@@ -64,13 +75,14 @@ const ZoneSetupScreen = ({ route, navigation }: ZoneSetupScreenProps) => {
           onPress={() => navigation.navigate('Zone', { zoneId: code })}
         />
       </View>
-      <Text style={{fontSize: 16}}>OR</Text>
-      <AppButton label="Create your own" onPress={() => {}} />
+      <Text style={{ fontSize: 16 }}>OR</Text>
+      <AppButton
+        label="Create your own"
+        onPress={() => navigation.navigate('Zone', { zoneId: code })}
+      />
     </View>
   );
 };
-
-export default ZoneSetupScreen;
 
 const $screen: ViewStyle = {
   flex: 1,

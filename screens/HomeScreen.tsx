@@ -1,30 +1,27 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
-import { Pressable, Text, TextStyle, View, ViewStyle } from 'react-native';
-import { AppColors, buttonPrimaryColor } from '../theme/colors';
+import { RootStackParamList } from '../navigators/AppNavigator';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Pressable, TextStyle, ViewStyle } from 'react-native';
+import { AppColors } from '../theme/colors';
 import { Ionicons } from '@expo/vector-icons';
+import { ProfileScreen, SettingsScreen, ZoneSetupScreen } from '.';
 import React from 'react';
-import SettingsScreen from './SettingsScreen';
-import ProfileScreen from './ProfileScreen';
-import ZoneSetupScreen from './ZoneSetupScreen';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
-const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
+export const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   return (
     <Tab.Navigator
       screenOptions={{
-        // add a button to the header
         headerRight: () => (
           <Pressable
             style={{ marginRight: 10, transform: [{ rotate: '180deg' }] }}
-            // style={({ pressed }) => (pressed ? [$buttonPressed] : [$button])}
-            onPress={() => navigation.navigate('Login', { token: '123', deviceId: '123' })}
+            onPress={() =>
+              navigation.navigate('Login', { token: '123', deviceId: '123' })
+            }
           >
-            {/* <Text style={$buttonText}>Logout</Text> */}
             <Ionicons
               name={'log-out-sharp'}
               size={24}
@@ -62,69 +59,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
           },
         }}
       />
-
-      {/* 
-          <View style={$screen}>
-            <View style={$heading}>
-              <Text style={$title}>Welcome to Frendl</Text>
-            </View>
-            <Pressable
-              style={({ pressed }) => (pressed ? [$buttonPressed] : [$button])}
-              onPress={() => navigation.navigate('Profile', { userId: '123' })}
-            >
-              <Text style={$buttonText}>Go to Profile</Text>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => (pressed ? [$buttonPressed] : [$button])}
-              onPress={() => navigation.navigate('Login', { token: '123' })}
-              >
-              <Text style={$buttonText}>Go to Login</Text>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => (pressed ? [$buttonPressed] : [$button])}
-              onPress={() => navigation.navigate('Zone', { zoneId: '123' })}
-              >
-              <Text style={$buttonText}>Go to Zone</Text>
-            </Pressable>
-          </View> */}
     </Tab.Navigator>
   );
 };
-
-const $screen: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-};
-
-export default HomeScreen;
-
-const $heading: ViewStyle = {
-  padding: 10,
-  // backgroundColor: 'lightblue',
-  justifyContent: 'center',
-  margin: 10,
-};
-const $title: TextStyle = {
-  fontSize: 24,
-  fontWeight: 'bold',
-  textAlign: 'center',
-};
-// const $button: ViewStyle = {
-//   width: 150,
-//   padding: 10,
-//   backgroundColor: buttonPrimaryColor,
-//   borderRadius: 5,
-//   elevation: 4,
-//   // backgroundColor: 'lightgray',
-//   margin: 10,
-// };
-// const $buttonPressed: ViewStyle[] = [
-//   $button,
-//   { backgroundColor: Colors.neutral900 },
-// ];
-// const $buttonText: TextStyle = {
-//   color: 'white',
-//   fontSize: 18,
-//   textAlign: 'center',
-// };

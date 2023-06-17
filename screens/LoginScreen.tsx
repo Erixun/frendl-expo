@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
 import {
   Text,
   TextInput,
@@ -14,10 +13,11 @@ import { useState } from 'react';
 import AppButton from '../components/AppButton';
 import { StatusBar } from 'expo-status-bar';
 import { AppColors } from '../theme/colors';
+import { RootStackParamList } from '../navigators/AppNavigator';
 
 type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
+export const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -50,8 +50,6 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     </View>
   );
 };
-
-export default LoginScreen;
 
 const $screen: ViewStyle = {
   flex: 1,

@@ -1,74 +1,53 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet } from 'react-native';
-import HomeScreen from './screens/HomeScreen';
-import LoginScreen from './screens/LoginScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import ZoneSetupScreen from './screens/ZoneSetupScreen';
 import { NavigationContainer } from '@react-navigation/native';
-import { AppColors, headerColor, screenColor } from './theme/colors';
-import ZoneScreen from './screens/ZoneScreen';
+import AppNavigator from './navigators/AppNavigator';
+import * as Location from 'expo-location';
+import { useEffect } from 'react';
+import { Alert } from 'react-native';
 
-export type RootStackParamList = {
-  Login: { token: string; deviceId: string };
-  Home: { deviceId: string };
-  Zone: { zoneId: string };
-  ZoneSetup: { zoneId: string };
-  Profile: { userId: string };
-  Settings: undefined;
-};
+import * as TaskManager from 'expo-task-manager';
+import { useMapStore } from './store/mapStore';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+TaskManager.defineTask('locationTask', ({ data: { locations }, error }) => {
+ if (error) {
+   // check `error.message` for more details.
+   console.log('error', error);
+   return;
+ }
+ console.log('Received new locations', locations);
+});
 
-const StackNavigator = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        contentStyle: {
-          backgroundColor: screenColor,
-        },
-        headerStyle: {
-          backgroundColor: headerColor,
-        },
-        headerTintColor: 'white',
-      }}
-    >
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{
-          headerShown: false,
-          contentStyle: {
-            backgroundColor: AppColors.info200,
-          },
-        }}
-      />
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen name="ZoneSetup" component={ZoneSetupScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Zone" component={ZoneScreen} />
-    </Stack.Navigator>
-  );
-};
 
 export default function App() {
+  const mapStore = useMapStore();
+
+  useEffect(() => {
+    mapStore.watchMyLocation();
+    //TODO: move to a service
+    // (async () => {
+      
+    //   let { status } = await Location.requestBackgroundPermissionsAsync();
+    //   if (status !== 'granted') {
+    //     Alert.alert('Permission to access location was denied');
+    //     // setErrorMsg('Permission to access location was denied');
+    //     return;
+    //   }
+    //   await Location.startLocationUpdatesAsync('locationTask', {
+    //     accuracy: Location.Accuracy.Balanced,
+    //   });
+    //   let location = await Location.getCurrentPositionAsync({});
+    //   // mapStore.myLocation = location.coords;
+    //   Alert.alert(JSON.stringify(location));
+    //   console.log(location)
+    //   // setLocation(location);
+    // })();
+  }, []);
+
+
   return (
     <NavigationContainer>
-      {/* <StatusBar style="dark" /> */}
-      <StackNavigator />
+      <StatusBar style="auto" />
+      <AppNavigator />
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
