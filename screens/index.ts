@@ -4,3 +4,4 @@ export * from './ProfileScreen';
 export * from './SettingsScreen';
 export * from './ZoneSetupScreen';
 export * from './ZoneScreen';
+export * from './ZoneChatScreen';

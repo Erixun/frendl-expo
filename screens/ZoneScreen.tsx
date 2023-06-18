@@ -21,7 +21,7 @@ import { useMapStore } from '../store/mapStore';
 import { MenuOptions } from '../components/ZoneMenuOptions';
 import { Marker as MarkerType } from '../store/mapStore';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Zone'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'ZoneHome'>;
 
 export const ZoneScreen = observer(({ route, navigation }: Props) => {
   const { zoneId } = route.params;
