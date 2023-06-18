@@ -63,7 +63,7 @@ export const MenuOptions = ({
         }}
         onPress={() => navigation.navigate('Home', { deviceId: '123' })}
       >
-        <Ionicons name={'md-exit-outline'} size={30} color={'white'} />
+        <Ionicons name={'md-exit-outline'} size={30} color={'white'} style={{transform: [{rotate: "180deg"}]}}/>
       </Pressable>
     </Animated.View>
   );
