@@ -27,7 +27,7 @@ const HomeTabNavigator = ({ route, navigation }: HomeScreenProps) => {
           >
             {/* <Text style={$buttonText}>Logout</Text> */}
             <Ionicons
-              name={'log-out-sharp'}
+              name={'log-out-outline'}
               size={24}
               color={AppColors.neutral600}
             />

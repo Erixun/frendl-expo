@@ -74,6 +74,7 @@ const screenColor = AppColors.neutral100;
 const headerColor = AppColors.success800;
 const buttonPrimaryColor = AppColors.primary500;
 const buttonSecondaryColor = AppColors.neutral500;
+const CURRENT_USER_COLOR = AppColors.primary500;
 
 export {
   AppColors,
@@ -81,4 +82,5 @@ export {
   headerColor,
   buttonPrimaryColor,
   buttonSecondaryColor,
+  CURRENT_USER_COLOR,
 };

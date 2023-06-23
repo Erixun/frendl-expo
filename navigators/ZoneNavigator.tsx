@@ -34,7 +34,7 @@ const ZoneNavigator: FC<ZoneStackProps> = ({ route, navigation }) => {
         options={{
           headerShown: false,
           contentStyle: {
-            backgroundColor: AppColors.info200,
+            backgroundColor: AppColors.neutral100,
           },
         }}
       />
@@ -44,7 +44,7 @@ const ZoneNavigator: FC<ZoneStackProps> = ({ route, navigation }) => {
         options={{
           headerShown: true,
           contentStyle: {
-            backgroundColor: AppColors.info200,
+            backgroundColor: AppColors.neutral100,
           },
         }}
       />

@@ -1,8 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import { postToUpdateChatLog } from '../services/ws';
-// import { writeContent } from '../utils';
-import { MapStore, Marker } from './mapStore';
-import writeContent from '../utils/writeContent';
+import { MapStore } from './mapStore';
+import { postToUpdateChatLog } from '../service/ws';
+import { writeContent } from '../utils';
 
 export const ZoneMenuOption = {
   ZONE_CODE: 'ZONE_CODE',
@@ -22,7 +21,7 @@ export class ZoneStore implements Zone {
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
-  // members: ZoneMember[] = [];
+  members: ZoneMember[] = [];
   memberMap = new Map<string, ZoneMember>();
   latestMemberName: string | undefined;
   memberJustLeft: string | undefined;
@@ -31,7 +30,7 @@ export class ZoneStore implements Zone {
   focusedMember?: ZoneMember | null;
   focusIntervalId: NodeJS.Timeout | undefined;
 
-  private _toggledMenuOption: string | undefined;
+  _toggledMenuOption: string | undefined;
   isDrawerOpen = false;
 
   constructor(map: MapStore, zone: Zone) {
@@ -47,16 +46,14 @@ export class ZoneStore implements Zone {
 
     this.initMembers(zone.members);
 
-    // TODO: implement this
-    // this.map.displayMemberLocations();
+    this.map.displayMemberLocations();
   }
 
-  private initMembers(members: ZoneMember[]) {
-    console.log('initMembers', members);
+  initMembers(members: ZoneMember[]) {
     for (const member of members) this.addMember(member);
   }
 
-  get members() {
+  get membersArray() {
     return Array.from(this.memberMap.values());
   }
 
@@ -64,10 +61,10 @@ export class ZoneStore implements Zone {
     const member = this.memberMap.get(userId);
     if (!member) return;
 
-    // member.marker?.setMap(null);
-    // member.infoWindow?.close();
+    member.marker?.setMap(null);
+    member.infoWindow?.close();
     this.memberMap.delete(userId);
-    this.memberJustLeft = member.username;
+    this.memberJustLeft = member.username
   }
 
   addMember(member: ZoneMember, hasJustJoined = false) {
@@ -77,48 +74,41 @@ export class ZoneStore implements Zone {
     if (hasJustJoined) this.latestMemberName = markedMember.username;
   }
 
-  private getLastMessage(member: ZoneMember) {
+  getLastMessage(member: ZoneMember) {
     return this.chatLog
-      .slice()
       .reverse()
       .find((entry) => entry.userId === member.userId)?.message;
   }
 
-  private showOnMap(member: ZoneMember) {
-    const {lat, lng} = member.location;
-    const location = {latitude: lat, longitude: lng}
-    const marker: Marker = {
-      id: member.userId,
-      location: location,//member.location,
+  showOnMap = (member: ZoneMember) => {
+    const marker = new google.maps.Marker({
+      position: member.location,
+      map: this.map.map,
       title: member.username,
-      body: ''//member.lastMessage,
-    };
+    });
+
     member.marker = marker;
-    // Use the map instance from MapStore to perform map-related actions
 
     const isCurrentUser = member.userId === this.currentUser?.userId;
-    // const marker = this.map.createMarker(member.location, member.username);
-    // const infoWindow = this.map.createInfoWindow(
-    //   member.location,
-    //   writeContent(member, isCurrentUser)
-    // );
+    const infoWindow = new google.maps.InfoWindow({
+      content: writeContent(member, isCurrentUser),
+    });
 
-    // member.marker = marker;
-    // member.infoWindow = infoWindow;
-    // member.hasInfoWindowOpen = true;
+    infoWindow.open(this.map.map, marker);
+    member.infoWindow = infoWindow;
 
-    // marker.addListener('click', () => {
-    //   if (member.hasInfoWindowOpen) {
-    //     infoWindow.close();
-    //     member.hasInfoWindowOpen = false;
-    //   } else {
-    //     infoWindow.open(this.map.map, marker);
-    //     member.hasInfoWindowOpen = true;
-    //   }
-    // });
+    member.hasInfoWindowOpen = true;
+    marker.addListener('click', () => {
+      if (member.hasInfoWindowOpen) {
+        infoWindow.close();
+        return (member.hasInfoWindowOpen = false);
+      }
+      infoWindow.open(this.map.map, marker);
+      member.hasInfoWindowOpen = true;
+    });
 
     return member;
-  }
+  };
 
   get currentUser() {
     return this.map.currentUser;
@@ -134,8 +124,8 @@ export class ZoneStore implements Zone {
     );
     if (validMember) {
       validMember.location = location;
-      // validMember.marker?.setPosition(location);
-      // validMember.infoWindow?.setPosition(location);
+      validMember.marker?.setPosition(location);
+      validMember.infoWindow?.setPosition(location);
 
       this.memberMap.set(userId, validMember);
     }
@@ -143,8 +133,8 @@ export class ZoneStore implements Zone {
 
   clear() {
     this.memberMap.forEach((member) => {
-      // member.marker?.setMap(null);
-      // member.infoWindow?.close();
+      member.marker?.setMap(null);
+      member.infoWindow?.close();
     });
 
     this.memberMap.clear();
@@ -163,15 +153,15 @@ export class ZoneStore implements Zone {
     });
   }
 
-  private showLocation(member: ZoneMember) {
+  showLocation(member: ZoneMember) {
     const location = this.getLocation(member);
     if (!location) return console.log('location not found');
 
-    // Use the map instance from MapStore to pan to the member's location
-    // this.map.panTo(location);
+    const latLng = new google.maps.LatLng(location);
+    return this.map.panTo(latLng);
   }
 
-  private getLocation({ userId }: { userId: string }) {
+  getLocation({ userId }: { userId: string }) {
     const member = this.memberMap.get(userId);
     if (!member) return console.log('member not found');
     return member.location;
@@ -184,7 +174,6 @@ export class ZoneStore implements Zone {
   get toggledMenuOption() {
     return this._toggledMenuOption ?? '';
   }
-
   set toggledMenuOption(option: string) {
     const isDrawerOption = ['MEMBERS', 'LOGS'].includes(option);
     this.isDrawerOpen = isDrawerOption;
@@ -199,7 +188,6 @@ export class ZoneStore implements Zone {
   }
 
   makeLogEntry(username: string, message: string) {
-    if (!this.currentUser) return console.log('no current user');
     const entry = {
       userId: this.currentUser?.userId,
       username,
@@ -222,6 +210,7 @@ export interface Zone {
   updatedAt: Date;
   createdBy: string;
   members: ZoneMember[];
+  memberMap?: Map<string, ZoneMember>;
   chatLog: ZoneChatLogEntry[];
 }
 
@@ -238,12 +227,10 @@ export interface ZoneMember {
   userColor: string;
   status?: string;
   message?: string;
-  marker?: Marker;
-  // infoWindow: {
-  //   content: JSX.Element;
-  // };
-  hasInfoWindowOpen?: boolean;
   location: ZoneLocation;
+  marker?: google.maps.Marker;
+  infoWindow?: google.maps.InfoWindow;
+  hasInfoWindowOpen?: boolean;
 }
 
 export interface ZoneLocation {
