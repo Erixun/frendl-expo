@@ -85,37 +85,13 @@ export class ZoneStore implements Zone {
   }
 
   private showOnMap(member: ZoneMember) {
-    const {lat, lng} = member.location;
-    const location = {latitude: lat, longitude: lng}
     const marker: Marker = {
       id: member.userId,
-      location: location,//member.location,
+      location: member.location, //member.location,
       title: member.username,
-      body: ''//member.lastMessage,
+      body: '', //member.lastMessage,
     };
     member.marker = marker;
-    // Use the map instance from MapStore to perform map-related actions
-
-    const isCurrentUser = member.userId === this.currentUser?.userId;
-    // const marker = this.map.createMarker(member.location, member.username);
-    // const infoWindow = this.map.createInfoWindow(
-    //   member.location,
-    //   writeContent(member, isCurrentUser)
-    // );
-
-    // member.marker = marker;
-    // member.infoWindow = infoWindow;
-    // member.hasInfoWindowOpen = true;
-
-    // marker.addListener('click', () => {
-    //   if (member.hasInfoWindowOpen) {
-    //     infoWindow.close();
-    //     member.hasInfoWindowOpen = false;
-    //   } else {
-    //     infoWindow.open(this.map.map, marker);
-    //     member.hasInfoWindowOpen = true;
-    //   }
-    // });
 
     return member;
   }
@@ -211,8 +187,10 @@ export class ZoneStore implements Zone {
   }
 }
 
-export const createZone = (map: MapStore, zone: Zone) =>
-  new ZoneStore(map, zone);
+export const createZone = (map: MapStore, zone: Zone) => {
+  map.initZone();
+  return new ZoneStore(map, zone);
+};
 
 export interface Zone {
   message?: string;
@@ -247,6 +225,6 @@ export interface ZoneMember {
 }
 
 export interface ZoneLocation {
-  lat: number;
-  lng: number;
+  latitude: number;
+  longitude: number;
 }

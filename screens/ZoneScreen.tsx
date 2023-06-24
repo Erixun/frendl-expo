@@ -102,13 +102,12 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
           style={{ height: '100%' }}
           initialRegion={map.initialRegion}
         >
-          {zone?.members.filter(mem => mem.username !== currentUser.username).map((member) => (
+          {zone?.members.map((member) => (
             <Marker
-            
               key={member.userId}
               coordinate={{
-                latitude: member.location.lat,
-                longitude: member.location.lng,
+                latitude: member.location.latitude,
+                longitude: member.location.longitude,
               }}
               title={member.username}
             >

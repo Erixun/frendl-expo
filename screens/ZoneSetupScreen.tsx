@@ -36,10 +36,10 @@ export const ZoneSetupScreen = observer(
 
     const handleEnterZone = async () => {
       const map = useMapStore();
+      map.zoneId = code;
       map.initZone();
       console.log('zoneId was', map.zoneId)
       console.log('code is', code)
-      map.zoneId = code;
       // runInAction(() => {
       // });
       await postToEnterZone(code).then((res) => {

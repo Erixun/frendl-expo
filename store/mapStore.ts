@@ -100,6 +100,8 @@ export class MapStore {
 
   initZone() {
     // this.displayMemberLocations();
+
+    console.log('initZone', this.zoneId);
     pusherClient.unsubscribe(`zone-channel-${this.prevZoneId}`);
 
     this.zoneChannel = pusherClient.subscribe(`zone-channel-${this.zoneId}`);

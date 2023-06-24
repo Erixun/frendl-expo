@@ -3,8 +3,8 @@ import { ZoneLocation } from './store/zoneStore';
 import { CURRENT_USER_COLOR } from './theme/colors';
 
 const Stockholm = {
-  lat: 59.3293,
-  lng: 18.0686,
+  latitude: 59.3293,
+  longitude: 18.0686,
 };
 
 const currentUser = {
@@ -24,8 +24,8 @@ const members = [
     status: 'offline',
     statusMessage: '',
     location: {
-      lat: 59.36,
-      lng: 18.05,
+      latitude: 59.36,
+      longitude: 18.05,
     },
   },
   {
@@ -34,18 +34,18 @@ const members = [
     status: 'online',
     statusMessage: '',
     location: {
-      lat: 59.365,
-      lng: 18.07,
+      latitude: 59.365,
+      longitude: 18.07,
     },
   },
 ];
 
 //Write a function to return a random location within a given radius of a given location
 //https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly
-//https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-and-km-distance
+//https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-latitude-lon-and-km-distance
 const getRandomLocation = (center: ZoneLocation, radius: number) => {
-  const y0 = center.lat;
-  const x0 = center.lng;
+  const y0 = center.latitude;
+  const x0 = center.longitude;
   const rd = radius / 111300; //about 111300 meters in one degree
 
   const u = Math.random();
@@ -59,8 +59,8 @@ const getRandomLocation = (center: ZoneLocation, radius: number) => {
   const xp = x / Math.cos(y0);
 
   return {
-    lat: y + y0,
-    lng: xp + x0,
+    latitude: y + y0,
+    longitude: xp + x0,
   };
 };
 
