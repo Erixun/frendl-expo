@@ -31,7 +31,7 @@ export const postToEnterZone = async (zoneCode: string) => {
 
   const zone = await fetch(`${ZONE_API_URL}/${zoneCode}`)
     .then(handleResponse)
-    .catch(err => console.error('Error fetching zone'));
+    // .catch(err => console.error('Error fetching zone'));
 
   return zone;
 };

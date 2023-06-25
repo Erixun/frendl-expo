@@ -36,6 +36,7 @@ const ZoneNavigator: FC<ZoneStackProps> = ({ route, navigation }) => {
           contentStyle: {
             backgroundColor: AppColors.neutral100,
           },
+          statusBarStyle: 'dark',
         }}
       />
       <Stack.Screen
@@ -46,6 +47,8 @@ const ZoneNavigator: FC<ZoneStackProps> = ({ route, navigation }) => {
           contentStyle: {
             backgroundColor: AppColors.neutral100,
           },
+          statusBarColor: AppColors.success800,
+          statusBarStyle: 'light',
         }}
       />
     </Stack.Navigator>

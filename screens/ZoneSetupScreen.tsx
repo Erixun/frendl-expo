@@ -37,31 +37,36 @@ export const ZoneSetupScreen = observer(
     const handleEnterZone = async () => {
       const map = useMapStore();
       map.zoneId = code;
-      map.initZone();
-      console.log('zoneId was', map.zoneId)
-      console.log('code is', code)
+      console.log('zoneId was', map.zoneId);
+      console.log('code is', code);
       // runInAction(() => {
       // });
-      await postToEnterZone(code).then((res) => {
-        console.log('res', res);
-        navigation.navigate('Zone', { zoneId: code });
-      }).catch(err => {
-        console.error(err.message)
-      })
+      await postToEnterZone(code)
+        .then((res) => {
+          console.log('res', res);
+          map.zoneId = code;
+          map.zone = createZone(map, res);
+          // map.initZone();
+          navigation.navigate('Zone', { zoneId: code });
+        })
+        .catch((err) => {
+          console.error(err.message);
+        });
     };
 
     const handleCreateZone = async () => {
       const map = useMapStore();
-      postToCreateZone().then((res) => {
-        console.log('res', res);
-        map.zoneId = res.zoneId;
-        map.zone = createZone(map, res);
-        navigation.navigate('Zone', { zoneId: res.zoneId });
-      }).catch(err => {
-        console.error(err.message)
-      })
+      postToCreateZone()
+        .then((res) => {
+          console.log('res', res);
+          map.zoneId = res.zoneId;
+          map.zone = createZone(map, res);
+          navigation.navigate('Zone', { zoneId: res.zoneId });
+        })
+        .catch((err) => {
+          console.error(err.message);
+        });
     };
-
 
     return (
       <KeyboardAvoidingView

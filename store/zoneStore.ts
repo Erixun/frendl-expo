@@ -77,7 +77,7 @@ export class ZoneStore implements Zone {
     if (hasJustJoined) this.latestMemberName = markedMember.username;
   }
 
-  private getLastMessage(member: ZoneMember) {
+  getLastMessage(member: ZoneMember) {
     return this.chatLog
       .slice()
       .reverse()
@@ -89,7 +89,7 @@ export class ZoneStore implements Zone {
       id: member.userId,
       location: member.location, //member.location,
       title: member.username,
-      body: '', //member.lastMessage,
+      body: this.getLastMessage(member) || ''//   chatLog.findLast(msg => msg.userId === member.userId)?.message || '', //member.lastMessage,
     };
     member.marker = marker;
 
@@ -171,6 +171,8 @@ export class ZoneStore implements Zone {
     runInAction(() => {
       this.chatLog = [...this.chatLog, entry];
       this.chatLogLastEntry = entry;
+      const member = this.memberMap.get(entry.userId)//?.setLastMessage(entry.message);
+      if(member) this.showOnMap(member);
     });
   }
 

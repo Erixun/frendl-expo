@@ -34,15 +34,6 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
     setHasOpenMenu(!hasOpenMenu);
   };
 
-  // useFocusEffect(() => {
-  //   const map = useMapStore();
-  //     console.log('HELLO');
-  //     runInAction(() => {
-  //       console.log('HELLO');
-  //       map.zoneId = zoneId;
-  //     });
-  // });
-
   useLayoutEffect(() => {
     const mapStoreZoneId = useMapStore().zoneId;
     console.log('mapStoreZoneId in ZoneScreen', mapStoreZoneId);
@@ -71,6 +62,11 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
   // console.log('map', map.myLocation);
 
   // console.log(zone?.members)
+  const [calloutVisible, setCalloutVisible] = useState(true);
+
+  const handleMapReady = () => {
+    setCalloutVisible(true);
+  };
 
   return (
     <SafeAreaView style={{ position: 'relative' }}>
@@ -98,10 +94,7 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
         {hasOpenMenu && <MenuOptions navigation={navigation} />}
       </View>
       {myLocation && (
-        <MapView
-          style={{ height: '100%' }}
-          initialRegion={map.initialRegion}
-        >
+        <MapView style={{ height: '100%' }} initialRegion={map.initialRegion}>
           {zone?.members.map((member) => (
             <Marker
               key={member.userId}
@@ -109,11 +102,48 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
                 latitude: member.location.latitude,
                 longitude: member.location.longitude,
               }}
-              title={member.username}
+              // title={member.username}
             >
-              <Callout tooltip={true} style={{minWidth: 200, elevation: 5, shadowRadius: 5, shadowColor: "#000000", shadowOffset: {height: 5, width: 5}}}>
+              <View style={{ alignContent: 'center', alignItems: 'center' }}>
+                <View
+                  style={{
+                    backgroundColor: member.userColor,
+                    padding: 10,
+                    alignItems: 'center',
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text style={{ fontWeight: 'bold' }}>{member.username}</Text>
+                  {zone.getLastMessage(member) && (
+                    <Text>{zone.getLastMessage(member)}</Text>
+                  )}
+                </View>
+                <View
+                  style={{
+                    borderWidth: 7,
+                    borderColor: 'transparent',
+                    borderTopColor: member.userColor,
+                  }}
+                ></View>
+                <Ionicons
+                  style={{ marginTop: -5 }}
+                  name={'person-circle'}
+                  size={30}
+                  color={AppColors.success700}
+                />
+              </View>
+              {/* <Callout
+                tooltip={true}
+                style={{
+                  minWidth: 200,
+                  elevation: 5,
+                  shadowRadius: 5,
+                  shadowColor: '#000000',
+                  shadowOffset: { height: 5, width: 5 },
+                }}
+              >
                 <InfoWindowContent marker={member.marker!} />
-              </Callout>
+              </Callout> */}
             </Marker>
           ))}
           {/* {myLocationMarker && (
@@ -136,15 +166,27 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
   );
 });
 
-const InfoWindowContent = ({ marker }: { marker: MarkerType }) => {
+const InfoWindowContent = observer(({ marker }: { marker: MarkerType }) => {
   return (
-    <View style={{justifyContent: "center", backgroundColor: "white", padding: 10, borderWidth: 1, borderRadius: 10}}>
-      <Text style={{textAlign: 'center', fontWeight: "bold"}}>{marker.title}</Text>
-      {marker.body && <Text style={{textAlign: 'center'}}>{marker.body}</Text>}
+    <View
+      style={{
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 10,
+      }}
+    >
+      <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
+        {marker.title}
+      </Text>
+      {marker.body && (
+        <Text style={{ textAlign: 'center' }}>{marker.body}</Text>
+      )}
       {/* Additional content */}
     </View>
   );
-};
+});
 
 // //TODO: move to separate file
 // const MenuOptions = ({
