@@ -19,7 +19,7 @@ const ZoneNavigator: FC<ZoneStackProps> = ({ route, navigation }) => {
       screenOptions={{
         headerShown: false,
         contentStyle: {
-          backgroundColor: screenColor,
+          backgroundColor: AppColors.neutral100,
         },
         headerStyle: {
           backgroundColor: headerColor,
@@ -34,9 +34,8 @@ const ZoneNavigator: FC<ZoneStackProps> = ({ route, navigation }) => {
         options={{
           headerShown: false,
           contentStyle: {
-            backgroundColor: AppColors.neutral100,
-          },
-          statusBarStyle: 'dark',
+            backgroundColor: AppColors.neutral500,
+          }
         }}
       />
       <Stack.Screen
@@ -46,9 +45,7 @@ const ZoneNavigator: FC<ZoneStackProps> = ({ route, navigation }) => {
           headerShown: true,
           contentStyle: {
             backgroundColor: AppColors.neutral100,
-          },
-          statusBarColor: AppColors.success800,
-          statusBarStyle: 'light',
+          }
         }}
       />
     </Stack.Navigator>
