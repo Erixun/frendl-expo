@@ -2,17 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './navigators/AppNavigator';
 import { useEffect } from 'react';
-
-import * as TaskManager from 'expo-task-manager';
 import { useMapStore } from './store/mapStore';
-
-TaskManager.defineTask('locationTask', ({ data: { locations }, error }) => {
-  if (error) {
-    console.log('error', error);
-    return;
-  }
-  console.log('Received new locations', locations);
-});
+import { SafeAreaView } from 'react-native';
 
 export default function App() {
   const mapStore = useMapStore();
@@ -22,9 +13,11 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer>
-      <StatusBar style="auto" />
-      <AppNavigator />
-    </NavigationContainer>
+    <SafeAreaView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <StatusBar style="auto" />
+        <AppNavigator />
+      </NavigationContainer>
+    </SafeAreaView>
   );
 }
