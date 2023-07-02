@@ -12,7 +12,6 @@ import AppTextInput from '../components/AppTextInput';
 import { AppColors } from '../theme/colors';
 import { RootStackParamList } from '../navigators/AppNavigator';
 import { useMapStore } from '../store/mapStore';
-import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { postToCreateZone, postToEnterZone } from '../services/ws';
 import { createZone } from '../store/zoneStore';
@@ -39,14 +38,11 @@ export const ZoneSetupScreen = observer(
       map.zoneId = code;
       console.log('zoneId was', map.zoneId);
       console.log('code is', code);
-      // runInAction(() => {
-      // });
       await postToEnterZone(code)
         .then((res) => {
           console.log('res', res);
           map.zoneId = code;
           map.zone = createZone(map, res);
-          // map.initZone();
           navigation.navigate('Zone', { zoneId: code });
         })
         .catch((err) => {
@@ -73,7 +69,6 @@ export const ZoneSetupScreen = observer(
         style={$screen}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* <View style={$screen}> */}
         <View
           style={{
             maxWidth: 200,
@@ -106,7 +101,8 @@ export const ZoneSetupScreen = observer(
               width: 150,
               fontSize: 18,
             }}
-            maxLength={9}
+            placeholder='E.g. X7CB84G'
+            maxLength={7}
             value={code}
             onChangeText={handleCodeInputChange}
           />
@@ -126,7 +122,6 @@ export const ZoneSetupScreen = observer(
           <Text style={{ fontSize: 16 }}>OR</Text>
         </View>
         <AppButton label="Create your own" onPress={handleCreateZone} />
-        {/* </View> */}
       </KeyboardAvoidingView>
     );
   }
