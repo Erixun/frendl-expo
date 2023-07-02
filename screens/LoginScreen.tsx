@@ -1,17 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   Text,
-  TextInput,
   TextStyle,
   View,
   ViewStyle,
   Image,
 } from 'react-native';
-import Button from '../components/AppButton';
-import AppTextInput from '../components/AppTextInput';
 import { useState } from 'react';
 import AppButton from '../components/AppButton';
-import { StatusBar } from 'expo-status-bar';
 import { AppColors } from '../theme/colors';
 import { RootStackParamList } from '../navigators/AppNavigator';
 

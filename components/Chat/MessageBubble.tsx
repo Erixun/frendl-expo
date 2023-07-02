@@ -66,7 +66,7 @@ const $messageBubble: ViewStyle = {
   alignSelf: 'flex-start',
   borderRadius: 10,
   marginBottom: 8,
-  elevation: 5,
+  // elevation: 5,
   flex: 0,
 };
 
