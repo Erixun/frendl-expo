@@ -85,7 +85,6 @@ export const deleteZoneMember = async () => {
     });
 };
 
-//TODO: implement this
 export const postToExitZone = async (map: MapStore) => {
   return fetch(
     `${ZONE_API_URL}/${map.zoneId}/exit`,
