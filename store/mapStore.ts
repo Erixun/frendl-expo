@@ -73,7 +73,7 @@ export class MapStore {
             });
             if (this.zoneId) {
               console.log('postToUpdateLocation');
-              postToUpdateLocation(this);
+              postToUpdateLocation();
             }
           }
         ).then((subscription) => {
@@ -123,7 +123,7 @@ export class MapStore {
       const { userId, entry } = body;
 
       console.log('chat-log-update entry', entry);
-      this.zone?.appendChatLog(entry);
+      if(userId !== this.currentUser?.userId) this.zone?.appendChatLog(entry);
       this.displayMessage(entry.message, userId);
     });
 

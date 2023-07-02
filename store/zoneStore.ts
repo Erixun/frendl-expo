@@ -89,7 +89,7 @@ export class ZoneStore implements Zone {
       id: member.userId,
       location: member.location, //member.location,
       title: member.username,
-      body: this.getLastMessage(member) || ''//   chatLog.findLast(msg => msg.userId === member.userId)?.message || '', //member.lastMessage,
+      body: this.getLastMessage(member) || '',
     };
     member.marker = marker;
 
@@ -171,9 +171,22 @@ export class ZoneStore implements Zone {
     runInAction(() => {
       this.chatLog = [...this.chatLog, entry];
       this.chatLogLastEntry = entry;
-      const member = this.memberMap.get(entry.userId)//?.setLastMessage(entry.message);
-      if(member) this.showOnMap(member);
+      const member = this.memberMap.get(entry.userId); //?.setLastMessage(entry.message);
+      if (member) this.showOnMap(member);
     });
+  }
+
+  async sendMessage(message: string) {
+    if (!this.currentUser) return console.log('no current user');
+    const entry = {
+      userId: this.currentUser?.userId,
+      username: this.currentUser?.username,
+      message,
+      createdAt: new Date().toISOString(),
+    };
+
+    this.appendChatLog(entry);
+    await postToUpdateChatLog(this.zoneId, entry);
   }
 
   makeLogEntry(username: string, message: string) {
@@ -182,7 +195,7 @@ export class ZoneStore implements Zone {
       userId: this.currentUser?.userId,
       username,
       message,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
 
     postToUpdateChatLog(this.zoneId, entry);
@@ -209,7 +222,7 @@ export interface ZoneChatLogEntry {
   userId: string;
   username: string;
   message: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface ZoneMember {
@@ -219,9 +232,6 @@ export interface ZoneMember {
   status?: string;
   message?: string;
   marker?: Marker;
-  // infoWindow: {
-  //   content: JSX.Element;
-  // };
   hasInfoWindowOpen?: boolean;
   location: ZoneLocation;
 }
