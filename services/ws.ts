@@ -1,5 +1,4 @@
 import { runInAction } from 'mobx';
-// import { useMapStore } from '../hooks/useMapStore';
 import { MapStore, useMapStore } from '../store/mapStore';
 import { ZoneChatLogEntry } from '../store/zoneStore';
 
