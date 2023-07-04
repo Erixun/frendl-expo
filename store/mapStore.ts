@@ -29,7 +29,7 @@ export class MapStore {
   markers: Marker[] = [];
 
   constructor() {
-    this.currentUser = currentUser
+    this.currentUser = currentUser;
     makeAutoObservable(this);
 
     reaction(
@@ -123,7 +123,7 @@ export class MapStore {
       const { userId, entry } = body;
 
       console.log('chat-log-update entry', entry);
-      if(userId !== this.currentUser?.userId) this.zone?.appendChatLog(entry);
+      if (userId !== this.currentUser?.userId) this.zone?.appendChatLog(entry);
       this.displayMessage(entry.message, userId);
     });
 
@@ -190,4 +190,8 @@ const store = { map };
 
 export function useMapStore(): MapStore {
   return store.map;
+}
+
+export function useZoneStore(): ZoneStore | undefined {
+  return store.map.zone;
 }

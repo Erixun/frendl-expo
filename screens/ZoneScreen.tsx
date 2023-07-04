@@ -3,12 +3,11 @@ import {
   SafeAreaView,
   View,
   ViewStyle,
-  Text,
   Platform,
   Animated,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import MapView, { Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import React, { useLayoutEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { AppColors } from '../theme/colors';
@@ -17,6 +16,7 @@ import { observer } from 'mobx-react-lite';
 import { useMapStore } from '../store/mapStore';
 import { MenuOptions } from '../components/ZoneMenuOptions';
 import { ZoneMembersModal } from '../components/ZoneMembersModal';
+import { ZoneMarker } from '../components/ZoneMarker';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ZoneHome'>;
 
@@ -86,7 +86,6 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
           borderRadius: 10,
         }}
       >
-        {/* TODO: separate Overlay/Menu component */}
         <View style={$overlay} pointerEvents="box-none">
           <Pressable
             pointerEvents="auto"
@@ -128,52 +127,7 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
             initialRegion={map.initialRegion}
           >
             {zone?.members.map((member) => (
-              <Marker
-                key={member.userId}
-                coordinate={{
-                  latitude: member.location.latitude,
-                  longitude: member.location.longitude,
-                }}
-                style={{ maxWidth: 200 }}
-              >
-                <View
-                  style={{
-                    alignContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: member.userColor,
-                      padding: 10,
-                      alignItems: 'center',
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Text style={{ fontWeight: 'bold' }}>
-                      {member.username}
-                    </Text>
-                    {zone.getLastMessage(member) && (
-                      <Text style={{ textAlign: 'center' }}>
-                        {zone.getLastMessage(member)}
-                      </Text>
-                    )}
-                  </View>
-                  <View
-                    style={{
-                      borderWidth: 7,
-                      borderColor: 'transparent',
-                      borderTopColor: member.userColor,
-                    }}
-                  ></View>
-                  <Ionicons
-                    style={{ marginTop: -5 }}
-                    name={'person-circle'}
-                    size={30}
-                    color={AppColors.success700}
-                  />
-                </View>
-              </Marker>
+              <ZoneMarker key={member.userId} member={member} zone={zone} />
             ))}
           </MapView>
         )}

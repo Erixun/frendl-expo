@@ -87,7 +87,7 @@ export class ZoneStore implements Zone {
   private showOnMap(member: ZoneMember) {
     const marker: Marker = {
       id: member.userId,
-      location: member.location, //member.location,
+      location: member.location,
       title: member.username,
       body: this.getLastMessage(member) || '',
     };
@@ -110,18 +110,12 @@ export class ZoneStore implements Zone {
     );
     if (validMember) {
       validMember.location = location;
-      // validMember.marker?.setPosition(location);
-      // validMember.infoWindow?.setPosition(location);
 
       this.memberMap.set(userId, validMember);
     }
   }
 
   clear() {
-    this.memberMap.forEach((member) => {
-      // member.marker?.setMap(null);
-      // member.infoWindow?.close();
-    });
 
     this.memberMap.clear();
   }
@@ -171,7 +165,7 @@ export class ZoneStore implements Zone {
     runInAction(() => {
       this.chatLog = [...this.chatLog, entry];
       this.chatLogLastEntry = entry;
-      const member = this.memberMap.get(entry.userId); //?.setLastMessage(entry.message);
+      const member = this.memberMap.get(entry.userId);
       if (member) this.showOnMap(member);
     });
   }
