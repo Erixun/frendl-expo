@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5, Entypo } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useRef, useLayoutEffect, createRef, useState } from 'react';
 import { Animated, Pressable, View, Text, Alert } from 'react-native';
@@ -11,26 +11,39 @@ import { runMenuAnimation } from '../utils/runMenuAnimation';
 
 export const MenuOptions = ({
   navigation,
+  isMembersModalOpen,
   onOpenMembersModal,
+  canShowMessenger,
+  onToggleMessenger,
+  clearActiveOptions,
 }: {
   navigation: NativeStackNavigationProp<RootStackParamList, 'ZoneHome'>;
+  isMembersModalOpen: boolean;
   onOpenMembersModal: () => void;
+  canShowMessenger: boolean;
+  onToggleMessenger: () => void;
+  clearActiveOptions: () => void;
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateAnim = useRef(new Animated.Value(20)).current;
   const initialValues = { fadeAnim, translateAnim };
 
-  const [showCode, setShowCode] = useState(false);
+  const [isActiveOption, setIsActiveOption] = useState({
+    code: false,
+  });
 
-  const toggleShowCode = () => {
-    setShowCode(!showCode);
+  const toggleActiveOption = (option: 'code', value: boolean | undefined = undefined) => {
+    setIsActiveOption({
+      ...isActiveOption,
+      [option]: value ?? !isActiveOption[option],
+    });
   };
 
   const copyCodeToClipboard = async () => {
     if (!zoneCode) return;
     await Clipboard.setStringAsync(zoneCode);
     console.log('copied to clipboard');
-    Alert.alert('Copied to clipboard');
+    Alert.alert('Code copied to clipboard');
   };
 
   const handleExitZone = () => {
@@ -41,6 +54,12 @@ export const MenuOptions = ({
   useLayoutEffect(runMenuAnimation(initialValues), []);
   const map = useMapStore();
   const zoneCode = map.zone?.zoneId;
+
+  const openChat = () => {
+    toggleActiveOption('code', false);
+    clearActiveOptions();
+    navigation.navigate('Zone Chat');
+  };
   return (
     <Animated.View
       style={{ opacity: fadeAnim, transform: [{ translateX: translateAnim }] }}
@@ -50,35 +69,45 @@ export const MenuOptions = ({
           padding: 10,
           backgroundColor: AppColors.success700,
           borderRadius: 5,
+          borderWidth: 4,
+          borderColor: isMembersModalOpen ? '#000000' : AppColors.success700,
           margin: 10,
         }}
         onPress={onOpenMembersModal}
       >
-        <Ionicons name={'people'} size={30} color={'white'} />
+        <Ionicons name={'people'} size={22} color={'white'} />
       </Pressable>
       <Pressable
         style={{
           padding: 10,
           backgroundColor: AppColors.success700,
           borderRadius: 5,
+          borderWidth: 4,
+          borderColor: isActiveOption.code ? '#000000' : AppColors.success700,
           margin: 10,
           position: 'relative',
+          alignItems: 'center',
         }}
-        onPress={toggleShowCode}
+        onPress={toggleActiveOption.bind(null, 'code', undefined)}
       >
-        <Ionicons name={'code'} size={30} color={'white'} />
-        {showCode && (
+        <FontAwesome5
+          name={'hashtag'}
+          size={22}
+          color={'white'}
+          style={{ alignContent: 'center' }}
+        />
+        {isActiveOption.code && (
           <View
             style={{
               position: 'absolute',
               flexDirection: 'row',
-              left: -155,
+              left: -160,
               alignItems: 'center',
               justifyContent: 'space-evenly',
               width: 150,
               padding: 10,
-              bottom: 0,
-              top: 0,
+              bottom: -4,
+              top: -4,
               borderRadius: 10,
               borderWidth: 2,
               borderColor: AppColors.success700,
@@ -100,24 +129,42 @@ export const MenuOptions = ({
           padding: 10,
           backgroundColor: AppColors.success700,
           borderRadius: 5,
+          borderWidth: 4,
+          borderColor: AppColors.success700,
           margin: 10,
         }}
-        onPress={() => navigation.navigate('Zone Chat')}
+        onPress={openChat}
+        // onPress={() => navigation.navigate('Zone Chat')}
       >
-        <Ionicons name={'chatbox-outline'} size={30} color={'white'} />
+        <Entypo name={'chat'} size={22} color={'white'} />
       </Pressable>
       <Pressable
         style={{
           padding: 10,
           backgroundColor: AppColors.success700,
           borderRadius: 5,
+          borderWidth: 4,
+          borderColor: canShowMessenger ? '#000000' : AppColors.success700,
+          margin: 10,
+        }}
+        onPress={onToggleMessenger}
+      >
+        <Entypo name={'megaphone'} size={22} color={'white'} />
+      </Pressable>
+      <Pressable
+        style={{
+          padding: 10,
+          backgroundColor: AppColors.success700,
+          borderRadius: 5,
+          borderWidth: 4,
+          borderColor: AppColors.success700,
           margin: 10,
         }}
         onPress={handleExitZone}
       >
         <Ionicons
           name={'md-exit-outline'}
-          size={30}
+          size={22}
           color={'white'}
           style={{ transform: [{ rotate: '180deg' }] }}
         />
@@ -125,46 +172,3 @@ export const MenuOptions = ({
     </Animated.View>
   );
 };
-
-// const translateIn = (translateAnim: Animated.Value) => {
-//   Animated.timing(translateAnim, {
-//     toValue: 0,
-//     duration: 200,
-//     useNativeDriver: true,
-//   }).start();
-// };
-
-// const fadeIn = (fadeAnim: Animated.Value) => {
-//   // Will change fadeAnim value to 1 in 5 seconds
-//   Animated.timing(fadeAnim, {
-//     toValue: 1,
-//     duration: 200,
-//     useNativeDriver: true,
-//   }).start();
-// };
-
-// const fadeOut = (fadeAnim: Animated.Value) => {
-//   // Will change fadeAnim value to 0 in 3 seconds
-//   Animated.timing(fadeAnim, {
-//     toValue: 0,
-//     duration: 300,
-//     useNativeDriver: true,
-//   }).start();
-// };
-
-// //TODO: move to separate file/utils?
-// const runMenuAnimation =
-//   ({
-//     translateAnim,
-//     fadeAnim,
-//   }: {
-//     translateAnim: Animated.Value;
-//     fadeAnim: Animated.Value;
-//   }) =>
-//   () => {
-//     translateIn(translateAnim);
-//     fadeIn(fadeAnim);
-//     return () => {
-//       fadeOut(fadeAnim);
-//     };
-//   };

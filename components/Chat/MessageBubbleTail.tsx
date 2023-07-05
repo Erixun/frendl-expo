@@ -7,16 +7,21 @@ export const MessageBubbleTail = ({
   direction: 'left' | 'right';
   userColor: string;
 }) => {
+
+  const isLeft = direction === 'left';
   return (
     <>
       <View
         style={{
           position: 'absolute',
-          bottom: 1,
-          [direction]: -16,
-          width: 16,
+          bottom: -1,
+          [direction]: -14,
+          width: 14,
           height: 24,
-          borderRadius: 8,
+          borderBottomLeftRadius: isLeft? 0 : 8,
+          borderBottomRightRadius: isLeft? 8: 0,
+          borderLeftWidth: 1,
+          borderRightWidth: 1,
           zIndex: 1,
           backgroundColor: 'white',
         }}
@@ -24,11 +29,16 @@ export const MessageBubbleTail = ({
       <View
         style={{
           position: 'absolute',
-          bottom: 0,
+          bottom: -1,
           [direction]: -10,
           width: 16,
           height: 16,
           borderRadius: 8,
+          borderColor: userColor,
+
+          borderWidth: 1,
+          borderBottomColor: 'black',
+          // borderLeftColor: 'red',
           backgroundColor: userColor,
         }}
       />

@@ -5,6 +5,7 @@ import {
   ViewStyle,
   Platform,
   Animated,
+  Keyboard,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import MapView from 'react-native-maps';
@@ -17,6 +18,7 @@ import { useMapStore } from '../store/mapStore';
 import { MenuOptions } from '../components/ZoneMenuOptions';
 import { ZoneMembersModal } from '../components/ZoneMembersModal';
 import { ZoneMarker } from '../components/ZoneMarker';
+import { AppMessenger } from './ZoneChatScreen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ZoneHome'>;
 
@@ -33,11 +35,14 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
     console.log('mapStoreZoneId in ZoneScreen', mapStoreZoneId);
     navigation.setOptions({
       headerShown: false,
+      contentStyle: {
+        backgroundColor: AppColors.neutral500,
+      },
     });
   }, [navigation, zoneId]);
 
   const map = useMapStore();
-  const { myLocation, myLocationMarker, zone } = map;
+  const { myLocation, zone } = map;
 
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
 
@@ -52,10 +57,15 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
   };
 
   const scale = useState(new Animated.Value(1))[0];
+  const translateY = useState(new Animated.Value(0))[0];
 
   const handleFallBackAnimation = () => {
     Animated.spring(scale, {
       toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+    Animated.spring(translateY, {
+      toValue: 20,
       useNativeDriver: true,
     }).start();
   };
@@ -65,16 +75,58 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
       toValue: 1,
       useNativeDriver: true,
     }).start();
+    Animated.spring(translateY, {
+      toValue: 0,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const [message, setMessage] = useState('');
+
+  const changeMessage = (text: string) => {
+    setMessage(text);
+  };
+
+  const handleSendMessage = () => {
+    Keyboard.dismiss();
+    setCanShowMessenger(false);
+    if (!message) return;
+
+    zone
+      ?.sendMessage(message)
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setMessage('');
+      });
+  };
+
+  const [canShowMessenger, setCanShowMessenger] = useState(false);
+
+  const toggleMessenger = () => {
+    setCanShowMessenger(!canShowMessenger);
+  };
+
+  const clearActiveOptions = () => {
+    setCanShowMessenger(false);
+    setIsMembersModalOpen(false);
   };
 
   return (
     <Animated.View
       style={{
-        position: 'relative',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         flex: 1,
+        elevation: 5,
         alignContent: 'flex-end',
-        transform: [{ scale: scale }],
-        borderRadius: 10,
+        transform: [{ scale: scale }, { translateY: translateY }],
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
         overflow: 'hidden',
       }}
     >
@@ -110,7 +162,11 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
           {hasOpenMenu && (
             <MenuOptions
               navigation={navigation}
+              clearActiveOptions={clearActiveOptions}
+              isMembersModalOpen={isMembersModalOpen}
               onOpenMembersModal={handleOpenMembersModal}
+              canShowMessenger={canShowMessenger}
+              onToggleMessenger={toggleMessenger}
             />
           )}
         </View>
@@ -131,6 +187,14 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
             ))}
           </MapView>
         )}
+
+        {canShowMessenger && (
+          <AppMessenger
+            message={message}
+            changeMessage={changeMessage}
+            handleSendMessage={handleSendMessage}
+          />
+        )}
         <ZoneMembersModal
           isVisible={isMembersModalOpen}
           onCloseModal={handleCloseMembersModal}
@@ -141,6 +205,7 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
 });
 
 const $overlay: ViewStyle = {
+  flex: 1,
   alignItems: 'flex-end',
   paddingTop: Platform.OS === 'android' ? 25 : 0,
   backgroundColor: 'rgba(0,0,0,0)',

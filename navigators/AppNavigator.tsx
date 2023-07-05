@@ -1,19 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LoginScreen, ZoneScreen } from '../screens';
+import { LoginScreen } from '../screens';
 import { AppColors, headerColor, screenColor } from '../theme/colors';
 import HomeTabNavigator from './HomeTabNavigator';
 import ZoneNavigator from './ZoneNavigator';
 
-const StackName = {
-  LOGIN: 'Login',
-  HOME: 'Home',
-  ZONE: 'Zone',
-  ZONE_SETUP: 'ZoneSetup',
-  ZONE_HOME: 'ZoneHome',
-  ZONE_CHAT: 'Zone Chat',
-  PROFILE: 'Profile',
-  SETTINGS: 'Settings',
-};
 
 export type RootStackParamList = {
   Login: { token: string; deviceId: string };
@@ -33,7 +23,7 @@ const AppNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         contentStyle: {
-          backgroundColor: screenColor,
+          backgroundColor: '#000000'//screenColor,
         },
         headerStyle: {
           backgroundColor: headerColor,

@@ -67,20 +67,40 @@ export const ZoneChatScreen = observer(() => {
         renderItem={renderMessage(DATA)}
         inverted={true}
       />
-      <View style={$messageInputContainer}>
-        <AppTextInput
-          style={$messageInput}
-          placeholder="Message"
-          value={message}
-          onChangeText={changeMessage}
-          onSubmitEditing={handleSendMessage}
-          blurOnSubmit={true}
-          autoFocus={false}
-        />
-      </View>
+      <AppMessenger
+        message={message}
+        changeMessage={changeMessage}
+        handleSendMessage={handleSendMessage}
+      />
     </KeyboardAvoidingView>
   );
 });
+
+export const AppMessenger = ({
+  message,
+  changeMessage,
+  handleSendMessage,
+  containerStyle
+}: {
+  message: string;
+  changeMessage: (text: string) => void;
+  handleSendMessage: () => void;
+  containerStyle?: ViewStyle;
+}) => {
+  return (
+    <View style={[$messageInputContainer, containerStyle]}>
+      <AppTextInput
+        style={$messageInput}
+        placeholder="Message"
+        value={message}
+        onChangeText={changeMessage}
+        onSubmitEditing={handleSendMessage}
+        blurOnSubmit={true}
+        autoFocus={true}
+      />
+    </View>
+  );
+};
 
 const $screen: ViewStyle = {
   flex: 1,
