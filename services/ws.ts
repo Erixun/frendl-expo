@@ -1,22 +1,22 @@
 import { runInAction } from 'mobx';
-import { MapStore, useMapStore } from '../store/mapStore';
+import { MapStore } from '../store/mapStore';
 import { ZoneChatLogEntry } from '../store/zoneStore';
 
 const API_URL = 'https://frendl-api.azurewebsites.net/api'; //process.env.API_URL//import.meta.env.VITE_API_URL// || 'http://localhost:3000/api';
 const ZONE_API_URL = `${API_URL}/zone`;
 
-export const postToEnterZone = async (zoneCode: string) => {
-  const map = useMapStore();
-  if (!map.currentUser) throw new Error('No current user found');
+export const postToEnterZone = async (map: MapStore) => {
+  const { zoneId, currentUser, myLocation } = map;
+  if (!currentUser) throw new Error('No current user');
   const options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      zoneId: zoneCode,
-      userId: map.currentUser.userId,
-      location: map.myLocation,
+      zoneId: zoneId,
+      userId: currentUser.userId,
+      location: myLocation,
     }),
   };
   const data = await fetch(`${API_URL}/add-zone-member`, options).then(
@@ -28,18 +28,17 @@ export const postToEnterZone = async (zoneCode: string) => {
     console.log('map.currentUser', map.currentUser);
   });
 
-  const zone = await fetch(`${ZONE_API_URL}/${zoneCode}`).then(handleResponse);
+  const zone = await fetch(`${ZONE_API_URL}/${zoneId}`).then(handleResponse);
 
   return zone;
 };
 
-export const postToCreateZone = () => {
-  const map = useMapStore();
+export const postToCreateZone = async (map: MapStore) => {
   return fetch(ZONE_API_URL, provideInitZoneOptions(map)).then(handleResponse);
 };
 
-export const postToUpdateLocation = () => {
-  const map = useMapStore();
+export const postToUpdateLocation = (map: MapStore) => {
+  // const map = useMapStore();
   if (!map.zone) throw new Error('No zone found');
   if (!map.currentUser) throw new Error('No current user found');
   const payload = {
@@ -64,8 +63,8 @@ export const postToUpdateLocation = () => {
     });
 };
 
-export const deleteZoneMember = async () => {
-  const map = useMapStore();
+export const deleteZoneMember = async (map: MapStore) => {
+  // const map = useMapStore();
   if (!map.zone) throw new Error('No zone found');
   if (!map.currentUser) throw new Error('No current user found');
   fetch(`${API_URL}/delete-zone-member`, {

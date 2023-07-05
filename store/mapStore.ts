@@ -61,10 +61,9 @@ export class MapStore {
         Location.watchPositionAsync(
           {
             accuracy: Location.LocationAccuracy.High,
-            timeInterval: 1000, // Update location every 5 seconds
+            timeInterval: 1000, // Update location every 1 seconds
           },
           (positionResult) => {
-            // const { latitude, longitude } = positionResult.coords;
             const location = positionResult.coords;
             console.log('Location update!', location);
             runInAction(() => {
@@ -73,7 +72,7 @@ export class MapStore {
             });
             if (this.zoneId) {
               console.log('postToUpdateLocation');
-              postToUpdateLocation();
+              postToUpdateLocation(this);
             }
           }
         ).then((subscription) => {
@@ -99,8 +98,6 @@ export class MapStore {
   }
 
   initZone() {
-    // this.displayMemberLocations();
-
     console.log('initZone', this.zoneId);
     pusherClient.unsubscribe(`zone-channel-${this.prevZoneId}`);
 
@@ -140,21 +137,11 @@ export class MapStore {
 
   displayMessage(message: string, userId = this.currentUser?.userId) {
     if (!userId) return console.error('No userId provided');
-    const member = this.zone?.memberMap.get(userId); //.find((member) => member.userId === userId);
+    const member = this.zone?.memberMap.get(userId);
     if (!member) return console.error('No user found for id', userId);
     member.message = message;
     const isCurrentUser = userId === this.currentUser?.userId;
     const content = writeContent(member, isCurrentUser);
-    // `<b style="color: ${
-    //   isCurrentUser ? CURRENT_USER_COLOR : user.userColor
-    // }">${user.username}</b><br>${message}`;
-    // const infoWindow = member.infoWindow;
-    // if (!infoWindow)
-    //   return console.error('No infoWindow found for user', member);
-
-    // infoWindow.setContent(content);
-    // infoWindow.setOptions({ maxWidth: 300 });
-    // infoWindow.open(this.map, member.marker);
   }
 
   stopWatchingMyLocation() {
@@ -172,12 +159,7 @@ export class MapStore {
         body: 'This is where I am',
       };
 
-      // const existingMarker = this.markers.find(
-      //   (marker) => marker.id === myLocationMarker.id
-      // );
-
       runInAction(() => {
-        // this.markers.push(myLocationMarker);
         this.myLocationMarker = myLocationMarker;
       });
     }
@@ -192,6 +174,9 @@ export function useMapStore(): MapStore {
   return store.map;
 }
 
-export function useZoneStore(): ZoneStore | undefined {
-  return store.map.zone;
+export function useZoneStore() {
+  const { zone } = store.map;
+  if (zone) return zone;
+
+  throw new Error('ZoneStore is undefined');
 }
