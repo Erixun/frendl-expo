@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { View, Pressable, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import { Marker } from 'react-native-maps';
 import { AppColors } from '../theme/colors';
 import { ZoneMember, ZoneStore } from '../store/zoneStore';
@@ -59,11 +59,6 @@ export const ZoneMarker = observer(({ member, zone }: ZoneMarkerProps) => {
             </View>
             <View
               style={{
-                // borderWidth: 8,
-                // borderBottomWidth: 1,
-                // borderColor: 'transparent',
-                // borderTopColor: member.userColor,
-                // zIndex: 100,
                 marginTop: -5,
                 marginBottom: 3,
                 width: 10,
@@ -84,23 +79,17 @@ export const ZoneMarker = observer(({ member, zone }: ZoneMarkerProps) => {
             justifyContent: 'center',
           }}
         >
-          <Ionicons
-            name={'person-circle-outline'}
-            size={40}
-            color={AppColors.success700}
-            padding={0}
-          />
+          {member.emoji ? (
+            <Text style={{ fontSize: 30, marginTop: -2 }}>{member.emoji}</Text>
+          ) : (
+            <Ionicons
+              name={'person-circle-outline'}
+              size={40}
+              color={AppColors.success700}
+              padding={0}
+            />
+          )}
         </View>
-        {/* <Pressable
-          // onPress={toggleInfoWindow}
-          style={{
-            backgroundColor: 'white',
-            borderRadius: 100,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        > */}
-        {/* </Pressable> */}
       </View>
     </Marker>
   );

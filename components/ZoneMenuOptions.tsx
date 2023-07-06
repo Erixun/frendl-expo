@@ -1,7 +1,14 @@
 import { Ionicons, FontAwesome5, Entypo } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useRef, useLayoutEffect, createRef, useState } from 'react';
-import { Animated, Pressable, View, Text, Alert } from 'react-native';
+import {
+  Animated,
+  Pressable,
+  View,
+  Text,
+  Alert,
+  ViewStyle,
+} from 'react-native';
 import { RootStackParamList } from '../navigators/AppNavigator';
 import { AppColors } from '../theme/colors';
 import { useMapStore } from '../store/mapStore';
@@ -15,6 +22,8 @@ export const MenuOptions = ({
   onOpenMembersModal,
   canShowMessenger,
   onToggleMessenger,
+  isEmojiPickerOpen,
+  onOpenEmojiPicker,
   clearActiveOptions,
 }: {
   navigation: NativeStackNavigationProp<RootStackParamList, 'ZoneHome'>;
@@ -22,6 +31,8 @@ export const MenuOptions = ({
   onOpenMembersModal: () => void;
   canShowMessenger: boolean;
   onToggleMessenger: () => void;
+  isEmojiPickerOpen: boolean;
+  onOpenEmojiPicker: () => void;
   clearActiveOptions: () => void;
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -32,7 +43,10 @@ export const MenuOptions = ({
     code: false,
   });
 
-  const toggleActiveOption = (option: 'code', value: boolean | undefined = undefined) => {
+  const toggleActiveOption = (
+    option: 'code',
+    value: boolean | undefined = undefined
+  ) => {
     setIsActiveOption({
       ...isActiveOption,
       [option]: value ?? !isActiveOption[option],
@@ -65,29 +79,25 @@ export const MenuOptions = ({
       style={{ opacity: fadeAnim, transform: [{ translateX: translateAnim }] }}
     >
       <Pressable
-        style={{
-          padding: 10,
-          backgroundColor: AppColors.success700,
-          borderRadius: 5,
-          borderWidth: 4,
-          borderColor: isMembersModalOpen ? '#000000' : AppColors.success700,
-          margin: 10,
-        }}
+        style={[
+          $pressable,
+          {
+            borderColor: isMembersModalOpen ? '#000000' : AppColors.success700,
+          },
+        ]}
         onPress={onOpenMembersModal}
       >
         <Ionicons name={'people'} size={22} color={'white'} />
       </Pressable>
       <Pressable
-        style={{
-          padding: 10,
-          backgroundColor: AppColors.success700,
-          borderRadius: 5,
-          borderWidth: 4,
-          borderColor: isActiveOption.code ? '#000000' : AppColors.success700,
-          margin: 10,
-          position: 'relative',
-          alignItems: 'center',
-        }}
+        style={[
+          $pressable,
+          {
+            borderColor: isActiveOption.code ? '#000000' : AppColors.success700,
+            position: 'relative',
+            alignItems: 'center',
+          },
+        ]}
         onPress={toggleActiveOption.bind(null, 'code', undefined)}
       >
         <FontAwesome5
@@ -125,43 +135,32 @@ export const MenuOptions = ({
         )}
       </Pressable>
       <Pressable
-        style={{
-          padding: 10,
-          backgroundColor: AppColors.success700,
-          borderRadius: 5,
-          borderWidth: 4,
-          borderColor: AppColors.success700,
-          margin: 10,
-        }}
-        onPress={openChat}
-        // onPress={() => navigation.navigate('Zone Chat')}
+        style={[
+          $pressable,
+          {
+            //TODO: isEmojiModalOpen
+            borderColor: isEmojiPickerOpen ? '#000000' : AppColors.success700,
+          },
+        ]}
+        onPress={onOpenEmojiPicker}
       >
+        <Entypo name={'emoji-happy'} size={22} color={'white'} />
+      </Pressable>
+      <Pressable style={$pressable} onPress={openChat}>
         <Entypo name={'chat'} size={22} color={'white'} />
       </Pressable>
       <Pressable
-        style={{
-          padding: 10,
-          backgroundColor: AppColors.success700,
-          borderRadius: 5,
-          borderWidth: 4,
-          borderColor: canShowMessenger ? '#000000' : AppColors.success700,
-          margin: 10,
-        }}
+        style={[
+          $pressable,
+          {
+            borderColor: canShowMessenger ? '#000000' : AppColors.success700,
+          },
+        ]}
         onPress={onToggleMessenger}
       >
         <Entypo name={'megaphone'} size={22} color={'white'} />
       </Pressable>
-      <Pressable
-        style={{
-          padding: 10,
-          backgroundColor: AppColors.success700,
-          borderRadius: 5,
-          borderWidth: 4,
-          borderColor: AppColors.success700,
-          margin: 10,
-        }}
-        onPress={handleExitZone}
-      >
+      <Pressable style={$pressable} onPress={handleExitZone}>
         <Ionicons
           name={'md-exit-outline'}
           size={22}
@@ -171,4 +170,14 @@ export const MenuOptions = ({
       </Pressable>
     </Animated.View>
   );
+};
+
+const $pressable: ViewStyle = {
+  padding: 10,
+  backgroundColor: AppColors.success700,
+  borderRadius: 5,
+  borderWidth: 4,
+  borderColor: AppColors.success700,
+  marginHorizontal: 10,
+  marginVertical: 5,
 };

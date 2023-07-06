@@ -16,7 +16,6 @@ export type RootStackParamList = {
   Settings: undefined;
 };
 
-//TODO: move to navigators folder & rename
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const AppNavigator = () => {
   return (

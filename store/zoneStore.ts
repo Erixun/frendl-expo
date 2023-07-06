@@ -3,6 +3,7 @@ import { postToUpdateChatLog } from '../services/ws';
 // import { writeContent } from '../utils';
 import { MapStore, Marker } from './mapStore';
 import writeContent from '../utils/writeContent';
+import { EmojiType } from 'rn-emoji-keyboard/lib/typescript/src/types';
 
 export const ZoneMenuOption = {
   ZONE_CODE: 'ZONE_CODE',
@@ -46,9 +47,6 @@ export class ZoneStore implements Zone {
     this.chatLog = zone.chatLog || [];
 
     this.initMembers(zone.members);
-
-    // TODO: implement this
-    // this.map.displayMemberLocations();
   }
 
   private initMembers(members: ZoneMember[]) {
@@ -64,8 +62,6 @@ export class ZoneStore implements Zone {
     const member = this.memberMap.get(userId);
     if (!member) return;
 
-    // member.marker?.setMap(null);
-    // member.infoWindow?.close();
     this.memberMap.delete(userId);
     this.memberJustLeft = member.username;
   }
@@ -84,6 +80,12 @@ export class ZoneStore implements Zone {
       .find((entry) => entry.userId === member.userId)?.message;
   }
 
+  setUserEmoji(emojiData: EmojiType) {
+    if(!this.currentUser) return;
+    const user = this.memberMap.get(this.currentUser.userId);
+    if (!user) return;
+    user.emoji = emojiData.emoji;
+  }
   private showOnMap(member: ZoneMember) {
     const marker: Marker = {
       id: member.userId,
@@ -137,7 +139,7 @@ export class ZoneStore implements Zone {
     const location = this.getLocation(member);
     if (!location) return console.log('location not found');
 
-    // Use the map instance from MapStore to pan to the member's location
+    // TODO: Use the map instance from MapStore to pan to the member's location
     // this.map.panTo(location);
   }
 
@@ -226,6 +228,7 @@ export interface ZoneMember {
   status?: string;
   message?: string;
   marker?: Marker;
+  emoji?: string;
   hasInfoWindowOpen?: boolean;
   location: ZoneLocation;
 }

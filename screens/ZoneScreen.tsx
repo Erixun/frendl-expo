@@ -19,6 +19,8 @@ import { MenuOptions } from '../components/ZoneMenuOptions';
 import { ZoneMembersModal } from '../components/ZoneMembersModal';
 import { ZoneMarker } from '../components/ZoneMarker';
 import { AppMessenger } from './ZoneChatScreen';
+import EmojiPicker from 'rn-emoji-keyboard';
+import { EmojiType } from 'rn-emoji-keyboard/lib/typescript/src/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ZoneHome'>;
 
@@ -52,7 +54,7 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
   };
 
   const handleCloseMembersModal = () => {
-    handleResetAnimation();
+    handleBringBackAnimation();
     setIsMembersModalOpen(false);
   };
 
@@ -70,7 +72,7 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
     }).start();
   };
 
-  const handleResetAnimation = () => {
+  const handleBringBackAnimation = () => {
     Animated.spring(scale, {
       toValue: 1,
       useNativeDriver: true,
@@ -113,6 +115,23 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
     setIsMembersModalOpen(false);
   };
 
+  const [hasEmojiPickerOpen, setHasEmojiPickerOpen] = useState(false);
+
+  const handleEmoji = (emoji: EmojiType) => {
+    console.log('emoji', emoji);
+    zone?.setUserEmoji(emoji);
+  };
+
+  const handleOpenEmojiPicker = () => {
+    handleFallBackAnimation();
+    setHasEmojiPickerOpen(true);
+  };
+
+  const handleCloseEmojiPicker = () => {
+    handleBringBackAnimation();
+    setHasEmojiPickerOpen(false);
+  };
+
   return (
     <Animated.View
       style={{
@@ -148,6 +167,7 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
                 : AppColors.success700,
               borderRadius: 5,
               margin: 10,
+              marginBottom: 5,
               elevation: 5,
               alignSelf: 'flex-end',
             }}
@@ -165,6 +185,8 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
               clearActiveOptions={clearActiveOptions}
               isMembersModalOpen={isMembersModalOpen}
               onOpenMembersModal={handleOpenMembersModal}
+              isEmojiPickerOpen={hasEmojiPickerOpen}
+              onOpenEmojiPicker={handleOpenEmojiPicker}
               canShowMessenger={canShowMessenger}
               onToggleMessenger={toggleMessenger}
             />
@@ -199,10 +221,34 @@ export const ZoneScreen = observer(({ route, navigation }: Props) => {
           isVisible={isMembersModalOpen}
           onCloseModal={handleCloseMembersModal}
         />
+        <EmojiPicker
+          onEmojiSelected={handleEmoji}
+          open={hasEmojiPickerOpen}
+          onClose={handleCloseEmojiPicker}
+          theme={{
+            backdrop: 'transparent',
+            knob: '#000000',
+          }}
+          styles={{
+            header: {
+              fontSize: 18,
+            },
+            container: {
+              borderWidth: 4,
+              borderBottomStartRadius: 0,
+              borderBottomEndRadius: 0,
+              borderColor: AppColors.success700,
+              marginBottom: -4,
+            },
+          }}
+        />
       </SafeAreaView>
     </Animated.View>
   );
 });
+
+// TODO: make this a component
+// const EmojiModal = ({ open, onEmojiSelected, onClose }: KeyboardProps) => {
 
 const $overlay: ViewStyle = {
   flex: 1,

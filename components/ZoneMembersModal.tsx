@@ -33,8 +33,8 @@ export const ZoneMembersModal = observer(
         <View
           style={{
             backgroundColor: 'white',
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
             position: 'absolute',
             bottom: 0,
             left: 0,
@@ -49,6 +49,7 @@ export const ZoneMembersModal = observer(
               justifyContent: 'space-between',
               backgroundColor: AppColors.success700,
               padding: 10,
+              paddingLeft: 14,
             }}
           >
             <Text
